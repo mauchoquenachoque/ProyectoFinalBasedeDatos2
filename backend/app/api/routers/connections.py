@@ -14,7 +14,11 @@ async def create_connection(
     service: ConnectionService = Depends(get_connection_service),
     current_user: User = Depends(get_current_active_user),
 ):
-    return await service.create_connection(data, current_user.id)
+    try:
+        return await service.create_connection(data, current_user.id)
+    except Exception as e:
+        import traceback
+        raise HTTPException(status_code=500, detail=f"ERROR: {str(e)} | TRACE: {traceback.format_exc()}")
 
 @router.get("/", response_model=List[ConnectionResponse])
 async def list_connections(
