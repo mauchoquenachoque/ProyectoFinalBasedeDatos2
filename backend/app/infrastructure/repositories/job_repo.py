@@ -16,12 +16,7 @@ class MongoJobRepository(JobRepository):
         self.collection = self.db["jobs"]
 
     async def _serialize(self, entity: MaskingJob) -> Dict[str, Any]:
-        data = entity.model_dump()
-        return {
-            **data,
-            "started_at": data["started_at"].isoformat() if data["started_at"] else None,
-            "completed_at": data["completed_at"].isoformat() if data["completed_at"] else None,
-        }
+        return entity.model_dump(mode="json")
 
     async def create(self, entity: MaskingJob) -> MaskingJob:
         entity_dict = await self._serialize(entity)
