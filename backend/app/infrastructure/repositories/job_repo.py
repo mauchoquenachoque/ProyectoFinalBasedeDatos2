@@ -28,13 +28,19 @@ class MongoJobRepository(JobRepository):
         data = await self.collection.find_one({"id": id})
         if not data:
             return None
-        return MaskingJob(**data)
+        try:
+            return MaskingJob(**data)
+        except Exception:
+            return None
 
     async def get_all(self) -> List[MaskingJob]:
         results = []
         cursor = self.collection.find({})
         async for doc in cursor:
-            results.append(MaskingJob(**doc))
+            try:
+                results.append(MaskingJob(**doc))
+            except Exception as e:
+                print(f"Skipping invalid job record {doc.get('id', 'unknown')}: {e}")
         return results
 
     async def update(self, id: str, entity: MaskingJob) -> Optional[MaskingJob]:
