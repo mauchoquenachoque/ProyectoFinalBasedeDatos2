@@ -16,7 +16,51 @@ Plataforma de enmascaramiento estático de datos para **PostgreSQL** y **MongoDB
 | Node.js     | 20+                 |
 | npm         | 9+                  |
 
-PostgreSQL o MongoDB en tu máquina solo hacen falta cuando quieras **lanzar jobs reales** contra una base; el propio API puede usar metadatos en memoria (`REPOSITORY_BACKEND=memory`).
+### Base de datos para desarrollo
+
+Para desarrollo local, puedes usar:
+
+#### Opción 1: Docker (Recomendado)
+```bash
+# Iniciar base de datos PostgreSQL local
+./scripts/db-local.sh start
+
+# Probar conexión
+./scripts/db-local.sh test
+
+# Detener cuando termines
+./scripts/db-local.sh stop
+```
+
+Configuración para conectar desde la app:
+- **Host:** `localhost`
+- **Port:** `5432`
+- **Database:** `testdb`
+- **Username:** `postgres`
+- **Password:** `mypassword`
+
+#### Opción 2: Supabase (Para producción/datos reales)
+Usa tus credenciales de Supabase:
+- **Host:** `db.ascnqnrejplzhllkiirk.supabase.co`
+- **Port:** `5432`
+- **Database:** `postgres`
+- **Username:** `postgres`
+- **Password:** `ISuqgfNniXhKuHd5`
+
+**Nota:** Desde entornos como GitHub Codespaces, Supabase no es accesible debido a restricciones de red. Usa Docker para desarrollo local.
+
+### Opción rápida con Docker (Linux/Mac)
+
+Desde la **raíz del repo**:
+
+```bash
+./scripts/start-dev.sh
+```
+
+Esto configura automáticamente:
+- Base de datos PostgreSQL local con Docker
+- Instala dependencias del backend y frontend
+- Te da instrucciones para iniciar la aplicación
 
 ### Opción rápida (Windows)
 
