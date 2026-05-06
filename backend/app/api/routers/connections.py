@@ -5,9 +5,7 @@ from app.application.schemas import ConnectionCreate, ConnectionResponse, RuleCr
 from app.application.services.connection_service import ConnectionService
 from app.core.exceptions import ResourceNotFoundError
 from app.domain.entities.user import User
-
 router = APIRouter(prefix="/connections", tags=["Connections"])
-
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_connection(
     data: ConnectionCreate,
@@ -21,7 +19,6 @@ async def create_connection(
     except Exception as e:
         import traceback
         raise HTTPException(status_code=500, detail=f"ERROR: {str(e)} | TRACE: {traceback.format_exc()}")
-
 @router.get("/")
 async def list_connections(
     current_user: User = Depends(get_current_active_user),
@@ -34,7 +31,6 @@ async def list_connections(
     except Exception as e:
         import traceback
         raise HTTPException(status_code=500, detail=f"ERROR: {str(e)} | TRACE: {traceback.format_exc()}")
-
 @router.get("/{conn_id}", response_model=ConnectionResponse)
 async def get_connection(
     conn_id: str,
@@ -45,7 +41,6 @@ async def get_connection(
         return await service.get_connection(conn_id, current_user.id)
     except ResourceNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
-
 @router.delete("/{conn_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_connection(
     conn_id: str,
@@ -56,7 +51,6 @@ async def delete_connection(
         await service.delete_connection(conn_id, current_user.id)
     except ResourceNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
-
 @router.get("/{conn_id}/discover", response_model=List[RuleCreate])
 async def discover_connection_pii(
     conn_id: str,
