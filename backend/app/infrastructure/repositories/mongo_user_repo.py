@@ -13,7 +13,7 @@ class MongoUserRepository(UserRepository):
         self.collection = self.db["users"]
 
     async def _serialize(self, entity: User) -> Dict[str, Any]:
-        data = entity.model_dump()
+        data = entity.model_dump(mode="json")
         return data
 
     async def create(self, entity: User) -> User:
