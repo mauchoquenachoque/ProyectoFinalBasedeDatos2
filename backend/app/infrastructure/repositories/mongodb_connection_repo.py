@@ -15,7 +15,7 @@ class MongoDBConnectionRepository(ConnectionRepository):
         self.collection = self.db["connections"]
 
     async def create(self, entity: ConnectionConfig) -> ConnectionConfig:
-        entity_dict = entity.model_dump()
+        entity_dict = entity.model_dump(mode="json")
         entity_dict["id"] = entity_dict.get("id") or str(uuid.uuid4())
         db_doc = entity_dict.copy()
         db_doc["additional_options"] = json.dumps(db_doc.get("additional_options") or {})
@@ -38,7 +38,7 @@ class MongoDBConnectionRepository(ConnectionRepository):
         return records
 
     async def update(self, id: str, entity: ConnectionConfig) -> Optional[ConnectionConfig]:
-        entity_dict = entity.model_dump()
+        entity_dict = entity.model_dump(mode="json")
         db_doc = entity_dict.copy()
         db_doc["additional_options"] = json.dumps(db_doc.get("additional_options") or {})
         result = await self.collection.update_one({"id": id}, {"$set": db_doc})
