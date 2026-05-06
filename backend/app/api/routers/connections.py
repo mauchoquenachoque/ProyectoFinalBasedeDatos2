@@ -8,24 +8,32 @@ from app.domain.entities.user import User
 
 router = APIRouter(prefix="/connections", tags=["Connections"])
 
-@router.post("/", response_model=ConnectionResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_connection(
     data: ConnectionCreate,
-    service: ConnectionService = Depends(get_connection_service),
     current_user: User = Depends(get_current_active_user),
 ):
     try:
+        from app.api.deps import get_connection_repository
+        repo = await get_connection_repository()
+        service = ConnectionService(repo)
         return await service.create_connection(data, current_user.id)
     except Exception as e:
         import traceback
         raise HTTPException(status_code=500, detail=f"ERROR: {str(e)} | TRACE: {traceback.format_exc()}")
 
-@router.get("/", response_model=List[ConnectionResponse])
+@router.get("/")
 async def list_connections(
-    service: ConnectionService = Depends(get_connection_service),
     current_user: User = Depends(get_current_active_user),
 ):
-    return await service.get_all_connections(current_user.id)
+    try:
+        from app.api.deps import get_connection_repository
+        repo = await get_connection_repository()
+        service = ConnectionService(repo)
+        return await service.get_all_connections(current_user.id)
+    except Exception as e:
+        import traceback
+        raise HTTPException(status_code=500, detail=f"ERROR: {str(e)} | TRACE: {traceback.format_exc()}")
 
 @router.get("/{conn_id}", response_model=ConnectionResponse)
 async def get_connection(
