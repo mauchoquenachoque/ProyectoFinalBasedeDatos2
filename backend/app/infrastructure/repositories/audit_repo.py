@@ -13,11 +13,7 @@ class MongoAuditRepository(AuditLogRepository):
         self.collection = self.db["audit_logs"]
 
     async def _serialize(self, entity: AuditLog) -> Dict[str, Any]:
-        data = entity.model_dump()
-        return {
-            **data,
-            "timestamp": data["timestamp"].isoformat() if data["timestamp"] else None,
-        }
+        return entity.model_dump(mode="json")
 
     async def create(self, entity: AuditLog) -> AuditLog:
         entity_dict = await self._serialize(entity)
